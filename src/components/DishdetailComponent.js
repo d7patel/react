@@ -14,7 +14,7 @@ export class DishDetail extends Component {
     renderDish(selectedDish){
         if (selectedDish != null){
             return(
-                <Card key={selectedDish.id}>
+                <Card>
                     <CardImg top src = {selectedDish.image} alt={selectedDish.name} />
                     <CardBody>
                         <CardTitle >{selectedDish.name}</CardTitle>
@@ -33,12 +33,12 @@ export class DishDetail extends Component {
     renderComments(selectedDish){
         if (selectedDish!=null){
             const dishComments= selectedDish.comments.map( (comm) =>{
-                var commentDate= new Date(comm.date)
+                var commentDate= new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comm.date)))
 
                 return(
                     <ul className="list-unstyled">
                         <li>{comm.comment}</li> 
-                        <li> {'-- '+comm.author +', '+commentDate.toDateString().slice(4, 15)}</li>  
+                        <li> {'-- '+comm.author +', '+commentDate}</li>  
                     </ul>
                 );
             })
@@ -56,15 +56,17 @@ export class DishDetail extends Component {
     }
     
     render() {
-        const selectedDish = this.props.selectedDish;
+        const selectedDish = this.props.dish;
         
         return(
-            <div className="row">
-                <div className="col-12 col-md-5 m-1">
-                    {this.renderDish(selectedDish)}
-                </div>
-                <div className="col-12 col-md-5 m-1">
-                    {this.renderComments(selectedDish)}    
+            <div className="container">
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        {this.renderDish(selectedDish)}
+                    </div>
+                    <div className="col-12 col-md-5 m-1">
+                        {this.renderComments(selectedDish)}    
+                    </div>
                 </div>
             </div>
         );
