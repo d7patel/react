@@ -18,7 +18,7 @@ class CommentForm extends Component {
           isModalOpen: false
         };
         this.toggleModal = this.toggleModal.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     toggleModal() {
@@ -27,9 +27,9 @@ class CommentForm extends Component {
         });
     }
 
-    handleLogin(values) {
+    handleSubmit(values) {
         this.toggleModal();
-        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+        this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render()
@@ -44,7 +44,7 @@ class CommentForm extends Component {
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}><strong>Submit Comment</strong></ModalHeader>
                     <ModalBody>
-                        <LocalForm onSubmit={(values) => this.handleLogin(values)}>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
                             <Row className="form-group">
                                 <Label htmlFor="rating" sm={12}>Rating</Label>
                                 <Col sm={12}>
@@ -113,7 +113,7 @@ class CommentForm extends Component {
         );
     }
 
-    function RenderComments({comments, addComment, dishId}){
+    function RenderComments({comments, postComment, dishId}){
         if (comments!=null){
             return(
                 <div className="col-12 col-md-5 m-1">
@@ -127,7 +127,7 @@ class CommentForm extends Component {
                                 </li>
                             );
                         })} 
-                        <CommentForm dishId={dishId} addComment={addComment} />  
+                        <CommentForm dishId={dishId} postComment={postComment} />  
                     </ul>
                 </div>
             );
@@ -175,7 +175,7 @@ class CommentForm extends Component {
                     <div className="row">
                         <RenderDish dish={props.dish} />
                         <RenderComments comments={props.comments} 
-                        addComment = {props.addComment}
+                        postComment = {props.postComment}
                         dishId = {props.dish.id} />
                         
                     </div>
