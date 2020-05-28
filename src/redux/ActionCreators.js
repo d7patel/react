@@ -1,54 +1,43 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 
-export const addFeedback = (feedback) => ({
-    type: ActionTypes.ADD_FEEDBACK,
-    payload: feedback
-});
-
-export const postFeedback = (feedbackId, firstname, lastname, telnum, email, agree, contactType, message ) => (dispatch) => {
-
-    const newFeedback = {
-        feedbackId: feedbackId,
-        firstname: firstname,
-        lastname: lastname,
-        telnum: telnum,
-        email: email,
-        agree: agree,
-        contactType: contactType,
-        message: message
-    };
+export const postFeedBack = () => (dispatch, getState) => {
+    var state = getState();
+    var newFeedback = {
+      firstname: state.feedback.firstname ,
+      lastname: state.feedback.lastname,
+      telnum: state.feedback.telnum,
+      email: state.feedback.email,
+      agree: state.feedback.agree,
+      contactType: state.feedback.contactType,
+      message: state.feedback.message
+    }
     newFeedback.date = new Date().toISOString();
-    
-    return fetch(baseUrl + 'feedback', {
-        method: "POST",
-        body: JSON.stringify(newFeedback),
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "same-origin"
-    })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
-        }
+    return fetch(baseUrl + 'feedback',{
+      method: 'POST',
+      body: JSON.stringify(newFeedback),
+      headers: {
+        "Content-Type": "application/json"
       },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
-    .then(response => dispatch(addFeedback(response)))
-    .catch(error =>  { console.log('post feedback', error.message); alert('Your feedback could not be posted\nError: '+error.message); });
-};
-
-export const feedbackFailed = (errmess) => ({
-    type: ActionTypes.FEEDBACK_FAILED,
-    payload: errmess
-});
+      credentials: "same-origin"
+    }).then(response => {
+      if(response.ok){
+        return response;
+      }
+      else {
+        var error = new Error('Error '+response.status+': '+response.statusText);
+        throw error;
+      }
+    },error => {
+      var errMess = new Error(error.message);
+      throw errMess;
+    }).then(response => response.json())
+      .then(response => alert('Thank you for your feedback' + JSON.stringify(response)))
+      .catch(error => {
+        console.log('Post feedbacks', error.message);
+        alert('Your feedback could not be posted\nError: '+ error.message);
+      });
+  }
 
 export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,
